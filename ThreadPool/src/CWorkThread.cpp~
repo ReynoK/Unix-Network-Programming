@@ -1,0 +1,67 @@
+#include "../include/CWorkThread.h"
+#include "../include/uerror.h"
+#include <iostream>
+#include <phread.h>
+#include <cstdio>
+using namespace std;
+
+CWorkThread::CWorkThread():m_isStop(false),m_job(NULL),m_jobParams(NULL),
+							m_threadCond(PTHREAD_COND_INITIALIZER),m_threadPool(NULL)
+							m_threadID(0)
+{
+	//创建线程
+	cout<<"create a thread!"<<endl;
+	int error = pthread_create(&m_threadID,NULL,start,NULL);	//第4个参数传入自身，然后在调用其jobParams
+	if(error!=0)
+		errQuit("create thread error:")
+}
+
+//析构函数
+CWorkThread::~CWorkThread(){
+	if(error!=0)
+		errQuit("destruct pthread error:")
+
+}
+
+//设置任务
+void CWorkThread::setJob(CJob * job,void * params;){
+	this.m_job = job;
+	this.m_jobParams = params;
+	m_cond.signal();			//唤醒run继续运行
+}
+
+//获取任务
+CJob * getJob(){
+	return m_job;
+}
+//开始运行线程
+void start(void *){
+	m_isStop=false;
+	this->run();
+}
+
+//线程的运行部分
+void CWorkThread::run(){
+	while(!m_isStop){
+		if(NULL == m_job)
+			m_cond.wait()
+		m_job->run(m_jobParams);
+		//清除已完成任务
+		m_job=NULL;
+		m_jobParams=NULL;
+		
+	}
+}
+
+//设置本线程所属的线程池
+void setThreadPool(CThreadPool * threadPool){
+	m_threadPool = threadPool;
+}
+
+//
+void join(){
+	m_isStop = true;
+	pthread_join(m_threadID);		//阻塞到直到本程序运行结束
+}
+
+

@@ -1,6 +1,8 @@
 #ifndef CJOB_H
 #define CJOB_H
 #include <string>
+#include <pthread.h>
+
 using namespace std;
 
 class CJob{

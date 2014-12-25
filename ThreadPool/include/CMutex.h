@@ -8,8 +8,9 @@ public:
 	virtual ~CMutex();
 	void lock();
 	void unlock();
+	pthread_mutex_t getMutex();
 private:
-	pthread_mutex_t mutex;
+	pthread_mutex_t m_mutex;
 };
 
 #endif 

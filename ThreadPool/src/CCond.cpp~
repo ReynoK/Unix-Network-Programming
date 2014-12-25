@@ -1,0 +1,9 @@
+#include <CCond.h>
+
+CCond::CCond()m_cond(PTHREAD_COND_INITIALIZER){
+
+}
+
+CCond::~CCond(){
+//静态分配，自己
+}

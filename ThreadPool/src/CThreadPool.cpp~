@@ -12,7 +12,6 @@ CThreadPool::CThreadPool(unsigned int initNum):m_initNum(initNum)
 }
 
 CThreadPool::~CThreadPool(){
-	destroy();
 
 }
 
@@ -22,20 +21,16 @@ void CThreadPool::createThread(unsigned int num){
 		CWorkThread * newThread = new CWorkThread();
 		newThread->setThreadPool(this);
 		m_idleList.push_back(newThread);
+		m_curNum++;
 	}
 	m_varMutex.lock();
 	cout<<"创建"<<m_idleList.size()<<"个线程完毕"<<endl;
 	m_varMutex.unlock();
 
 }
-//
+
 void CThreadPool::destroy(){
-	for(auto &item:m_busyList)
-		item->join();
-	for(auto &item:m_idleList){
-		item->join();
-		delete item;
-	}
+
 }
 
 //将线程移到忙队列中
@@ -51,7 +46,7 @@ void CThreadPool::moveToBusyList(CWorkThread * thread){
 	}
 	if(m_idleList.size()<m_minIdleNum){
 		if(m_maxIdleNum+m_busyList.size()<=m_maxNum)
-			createThread(m_maxIdleNum-m_idleList.size());	//扩展到最大限制闲置数列
+			createThread(m_maxIdleNum-m_idleList.size());
 		else
 			createThread(m_maxNum-m_busyList.size()-m_idleList.size());
 	}
@@ -91,7 +86,8 @@ void CThreadPool::deleteIdleList(unsigned int num){
 	for(int i=0;i<deleteNum;i++){
 		auto item = m_idleList.begin();		//获得闲置队列的首元素
 		temp = *item;
-		m_idleList.earse(item);		
+		m_idleList.earse(item);
+		m_curNum--;							//线程总数量减少			
 		delete temp;						//delete闲置线程，防止内存泄漏
 		temp = NULL;
 	}
@@ -106,11 +102,16 @@ void CThreadPool::run(CJob * job,void * params){
 		moveToBusyList(workThread);
 		workThread->setJob(job,params);
 	}
+
 }
 //获得可用线程
 CWorkThread * CThreadPool::getaIdleThread(){
 	//在获得可用线程时，已经从闲置线程队列中删除，所以在放到忙队列时，无需在从闲置队列中删除
-	if( m_idleList.size()==0)	//当忙线程数量到达最大数
+
+
+
+
+	if( m_busyList.size() == m_maxNum)	//当忙线程数量到达最大数
 		m_idleCCond.wait()
 	m_idleMutex.lock();
 	if(m_idleList.size()>0){
@@ -121,4 +122,5 @@ CWorkThread * CThreadPool::getaIdleThread(){
 		m_idleMutex.unlock();
 		return NULL;
 	}
+
 }

@@ -43,8 +43,8 @@ void CWorkThread::run(){
 	while(!m_isStop){
 		if(NULL == m_job)
 			m_cond.wait(5)
-		if(NULL == m_job)		//5秒过后，若任务仍为空，则继续循环，此时线程仍处于闲置队列中
-			continue;		//当线程停止时，线程仍处于闲置队列中
+		if(NULL == m_job)		//5秒过后，若任务仍为空，则继续循环
+			continue;
 		m_job->run(m_jobParams);
 		//清除已完成任务
 		m_job=NULL;

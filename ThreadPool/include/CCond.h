@@ -9,7 +9,7 @@ class CCond{
 public:
 	CCond();
 	~CCond();
-	void wait();
+	void wait(unsigned int val=0);
 	void signal();
 private:
 	pthread_cond_t m_cond;

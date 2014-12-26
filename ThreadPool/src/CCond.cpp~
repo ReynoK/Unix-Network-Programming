@@ -11,7 +11,6 @@ CCond::~CCond(){
 //静态分配，无需destroy
 }
 
-//当val为0时，表示无限时间阻塞，不为0时，表示有时间的阻塞
 void CCond::wait(unsigned int val){
 	pthread_mutex_lock(&m_mutex);
 	if(val == 0)

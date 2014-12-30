@@ -14,7 +14,7 @@ public:
 	~CThreadPool();
 	void createThread(unsigned int num);
 	void destroy();
-	void run();
+	void run(CJob * job,void * params);
 	void moveToBusyList(CWorkThread * thread);
 	void moveToIdleList(CWorkThread * thread);
 	void deleteIdleList(unsigned int num);
